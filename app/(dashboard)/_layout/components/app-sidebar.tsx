@@ -3,11 +3,12 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import {
-  RepeatIcon,
-  WalletIcon,
-  PiggyBankIcon,
-  LayoutDashboardIcon,
+  Repeat,
+  Wallet,
+  PiggyBank,
+  LayoutDashboard,
   Banknote,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -23,6 +24,11 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 type NavItem = {
   title: string;
@@ -38,7 +44,7 @@ const navItems: NavItem[] = [
   {
     title: "Transactions",
     url: "/transactions",
-    icon: RepeatIcon,
+    icon: Repeat,
     items: [
       { title: "Expenses", url: "/transactions/expenses" },
       { title: "Income", url: "/transactions/income" },
@@ -58,27 +64,22 @@ const navItems: NavItem[] = [
   {
     title: "Wallets",
     url: "/wallets",
-    icon: WalletIcon,
+    icon: Wallet,
   },
   {
     title: "Savings",
     url: "/savings",
-    icon: PiggyBankIcon,
+    icon: PiggyBank,
   },
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: LayoutDashboardIcon,
+    icon: LayoutDashboard,
   },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [openMap, setOpenMap] = React.useState<Record<string, boolean>>({});
-
-  const toggleOpen = (url: string) => {
-    setOpenMap((s) => ({ ...s, [url]: !s[url] }));
-  };
 
   return (
     <Sidebar>
@@ -94,58 +95,56 @@ export function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const activeByPath = pathname.startsWith(item.url);
-                const isOpen = !!openMap[item.url] || activeByPath;
+                const isActive = pathname.startsWith(item.url);
 
                 return (
-                  <SidebarMenuItem key={item.title}>
-                    {item.items ? (
-                      <>
-                        {/* For items with children, toggle expand/collapse instead of navigating */}
+                  <Collapsible
+                    key={item.title}
+                    asChild
+                    defaultOpen={isActive}
+                    className="group/collapsible"
+                  >
+                    <SidebarMenuItem>
+                      {item.items ? (
+                        <>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton tooltip={item.title}>
+                              <Icon className="h-4 w-4" />
+                              <span>{item.title}</span>
+                              <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={pathname === subItem.url}
+                                  >
+                                    <a href={subItem.url}>
+                                      <span>{subItem.title}</span>
+                                    </a>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </>
+                      ) : (
                         <SidebarMenuButton
-                          isActive={activeByPath}
+                          asChild
+                          isActive={pathname === item.url}
                           tooltip={item.title}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            toggleOpen(item.url);
-                          }}
                         >
-                          <div className="flex items-center gap-2">
+                          <a href={item.url}>
                             <Icon className="h-4 w-4" />
                             <span>{item.title}</span>
-                          </div>
+                          </a>
                         </SidebarMenuButton>
-
-                        {isOpen && (
-                          <SidebarMenuSub>
-                            {item.items.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton
-                                  asChild
-                                  isActive={pathname === subItem.url}
-                                >
-                                  <a href={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </a>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        )}
-                      </>
-                    ) : (
-                      <SidebarMenuButton
-                        asChild
-                        isActive={pathname === item.url}
-                        tooltip={item.title}
-                      >
-                        <a href={item.url}>
-                          <Icon className="h-4 w-4" />
-                          <span>{item.title}</span>
-                        </a>
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
+                      )}
+                    </SidebarMenuItem>
+                  </Collapsible>
                 );
               })}
             </SidebarMenu>
