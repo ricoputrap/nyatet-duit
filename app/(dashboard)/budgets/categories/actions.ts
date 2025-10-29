@@ -7,9 +7,6 @@ export async function getCategories(params: ICategoryPageParams): Promise<ICateg
   const supabase = await createClient();
   const { search, sortKey, sortOrder } = params;
 
-  // simulate slow network
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   let query = supabase
     .from("categories")
     .select("id, name");

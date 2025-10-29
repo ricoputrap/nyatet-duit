@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import CategoryTable from "./components/category-table";
 import { ICategoryPageParams } from "./types";
 import CategoryTableLoading from "./components/category-table/loading";
+import Search from "./components/search";
+// import { Button } from "@/components/ui/button";
 
 export default async function BudgetsCategoriesPage({ searchParams }: { searchParams: Promise<ICategoryPageParams> }) {
   return (
@@ -12,7 +14,11 @@ export default async function BudgetsCategoriesPage({ searchParams }: { searchPa
           Manage your budget categories
         </p>
       </div>
-      {/* Placeholder for categories */}
+
+      <div className="flex items-center justify-between gap-4">
+        <Search />
+        {/* <Button onClick={() => alert('Add category')}>Add</Button> */}
+      </div>
 
       <Suspense fallback={<CategoryTableLoading />}>
         <CategoryTable params={searchParams} />

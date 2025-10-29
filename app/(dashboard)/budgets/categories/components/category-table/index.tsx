@@ -1,4 +1,3 @@
-import React from 'react'
 import { getCategories } from '../../actions'
 import { DataTable } from './data-table';
 import { columns } from './columns';
