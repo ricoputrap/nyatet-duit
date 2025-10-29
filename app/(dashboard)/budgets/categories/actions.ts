@@ -5,7 +5,11 @@ import { ICategory, ICategoryPageParams } from "./types";
 
 export async function getCategories(params: ICategoryPageParams): Promise<ICategory[]> {
   const supabase = await createClient();
-  const { search, sortKey, sortOrder } = params;
+  const { 
+    search = "", 
+    sortKey = "name", 
+    sortOrder = "asc" 
+  } = params;
 
   let query = supabase
     .from("categories")
@@ -16,7 +20,7 @@ export async function getCategories(params: ICategoryPageParams): Promise<ICateg
   }
 
   const { data: categories, error } = await query
-    .order(sortKey || "name", { ascending: sortOrder === 'asc' });
+    .order(sortKey, { ascending: sortOrder === 'asc' });
 
   // TODO handle error properly
   if (error) {
