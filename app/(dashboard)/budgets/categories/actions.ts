@@ -35,14 +35,30 @@ export async function getCategories(params: ICategoryPageParams): Promise<ICateg
 export async function createCategory(name: string){
   const supabase = await createClient();
 
-
-    const { data, error } = await supabase
+    const { error } = await supabase
     .from('categories')
     .insert([{ name }]);
 
   // TODO handle error properly
   if (error) {
     console.error("Error creating category:", error);
+    return null;
+  }
+
+  revalidatePath('/dashboard/budgets/categories');
+}
+
+export async function updateCategory(id: string, name: string){
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('categories')
+    .update({ name })
+    .eq('id', id);
+
+  // TODO handle error properly
+  if (error) {
+    console.error("Error updating category:", error);
     return null;
   }
 

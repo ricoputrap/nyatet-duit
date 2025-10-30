@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useCategoryFormStore } from "../store"
-import { createCategory } from "../actions"
+import { createCategory, updateCategory } from "../actions"
 
 export function CategoryFormSheet() {
   const { isOpen, mode, category, close } = useCategoryFormStore()
@@ -16,10 +16,8 @@ export function CategoryFormSheet() {
     const formData = new FormData(e.currentTarget)
     const name = formData.get('name') as string
 
-    // TODO: Implement create/update logic with server action
-    console.log('Form submitted:', { name, isEdit, categoryId: category?.id })
     if (isEdit) {
-      // Call update action
+      await updateCategory(category!.id, name);
     } else {
       await createCategory(name);
     }
