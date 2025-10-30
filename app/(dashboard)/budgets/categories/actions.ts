@@ -64,3 +64,20 @@ export async function updateCategory(id: string, name: string){
 
   revalidatePath('/dashboard/budgets/categories');
 }
+
+export async function deleteCategory(id: string){
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('categories')
+    .delete()
+    .eq('id', id);
+
+  // TODO handle error properly
+  if (error) {
+    console.error("Error deleting category:", error);
+    return null;
+  }
+
+  revalidatePath('/dashboard/budgets/categories');
+}
