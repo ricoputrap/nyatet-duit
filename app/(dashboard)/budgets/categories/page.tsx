@@ -4,6 +4,7 @@ import { ICategoryPageParams } from "./types";
 import CategoryTableLoading from "./components/category-table/loading";
 import Search from "./components/search";
 import SearchLoading from "./components/search/loading";
+import { CategoryFormSheet } from "./components/category-form-sheet";
 
 export default async function BudgetsCategoriesPage({ searchParams }: { searchParams: Promise<ICategoryPageParams> }) {
   return (
@@ -23,6 +24,10 @@ export default async function BudgetsCategoriesPage({ searchParams }: { searchPa
 
       <Suspense fallback={<CategoryTableLoading />}>
         <CategoryTable params={searchParams} />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <CategoryFormSheet searchParams={searchParams} />
       </Suspense>
     </div>
   );
