@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { ICategory, ICategoryPageParams } from "./types";
+import { revalidatePath } from 'next/cache';
 
 export async function getCategories(params: ICategoryPageParams): Promise<ICategory[]> {
   const supabase = await createClient();
@@ -31,19 +32,19 @@ export async function getCategories(params: ICategoryPageParams): Promise<ICateg
   return categories as ICategory[];
 }
 
-export async function getCategoryById(id: string): Promise<ICategory | null> {
+export async function createCategory(name: string){
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select("id, name")
-    .eq("id", id)
-    .single();
 
+    const { data, error } = await supabase
+    .from('categories')
+    .insert([{ name }]);
+
+  // TODO handle error properly
   if (error) {
-    console.error("Error fetching category:", error);
+    console.error("Error creating category:", error);
     return null;
   }
 
-  return data as ICategory;
+  revalidatePath('/dashboard/budgets/categories');
 }
