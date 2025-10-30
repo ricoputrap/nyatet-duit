@@ -1,25 +1,30 @@
 "use client"
 
-import React from 'react'
+import React, { use } from 'react'
 import { Input } from "@/components/ui/input"
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
+import { ICategoryPageParams } from '../../types'
 
-export default function Search() {
-  const searchParams = useSearchParams()
+interface SearchProps {
+  searchParams: Promise<ICategoryPageParams>
+}
+
+export default function Search({ searchParams }: SearchProps) {
+  const params = use(searchParams)
   const router = useRouter()
-  const [value, setValue] = React.useState(searchParams.get('search') || '')
+  const [value, setValue] = React.useState(params.search || '')
 
   const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams)
+    const urlParams = new URLSearchParams(window.location.search)
     
     if (term) {
-      params.set('search', term)
+      urlParams.set('search', term)
     } else {
-      params.delete('search')
+      urlParams.delete('search')
     }
     
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${urlParams.toString()}`)
   }, 300)
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
