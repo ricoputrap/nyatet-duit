@@ -6,7 +6,11 @@ import Search from "./components/search";
 import SearchLoading from "./components/search/loading";
 import { CategoryFormSheet } from "./components/category-form-sheet";
 
-export default async function BudgetsCategoriesPage({ searchParams }: { searchParams: Promise<ICategoryPageParams> }) {
+export default async function BudgetsCategoriesPage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<ICategoryPageParams> 
+}) {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div>
@@ -26,9 +30,8 @@ export default async function BudgetsCategoriesPage({ searchParams }: { searchPa
         <CategoryTable params={searchParams} />
       </Suspense>
 
-      <Suspense fallback={null}>
-        <CategoryFormSheet searchParams={searchParams} />
-      </Suspense>
+      {/* No props needed! */}
+      <CategoryFormSheet />
     </div>
   );
 }

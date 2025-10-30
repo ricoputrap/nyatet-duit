@@ -1,10 +1,10 @@
 "use client"
- 
+
 import { ColumnDef } from "@tanstack/react-table"
 import { ICategory } from "../../types"
 import { Button } from "@/components/ui/button"
 import { ArrowUpDown, Pencil, Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useCategoryFormStore } from "../../store"
 
 export const columns: ColumnDef<ICategory>[] = [
   {
@@ -27,32 +27,22 @@ export const columns: ColumnDef<ICategory>[] = [
     size: 100,
     cell: ({ row }) => {
       const category = row.original
-      const router = useRouter()
+      const openEdit = useCategoryFormStore((state) => state.openEdit)
 
       const handleEdit = () => {
-        const params = new URLSearchParams(window.location.search)
-        params.set('edit', category.id)
-        router.push(`?${params.toString()}`)
+        openEdit(category) // Instant - no network call!
       }
 
       const handleDelete = () => {
-        alert(`Delete category: ${category.name}`)
+        alert(`Delete ${category.name}`)
       }
 
       return (
         <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleEdit}
-          >
+          <Button variant="ghost" size="icon" onClick={handleEdit}>
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDelete}
-          >
+          <Button variant="ghost" size="icon" onClick={handleDelete}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
