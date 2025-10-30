@@ -30,3 +30,20 @@ export async function getCategories(params: ICategoryPageParams): Promise<ICateg
 
   return categories as ICategory[];
 }
+
+export async function getCategoryById(id: string): Promise<ICategory | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching category:", error);
+    return null;
+  }
+
+  return data as ICategory;
+}

@@ -1,13 +1,13 @@
 "use client"
 
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { ICategoryPageParams } from "../types"
 import { use, useEffect, useState } from "react"
-import { getCategories } from "../actions"
+import { getCategoryById } from "../actions"
 
 interface CategoryFormSheetProps {
   searchParams: Promise<ICategoryPageParams>
@@ -27,9 +27,8 @@ export function CategoryFormSheet({ searchParams }: CategoryFormSheetProps) {
     async function fetchCategory() {
       if (editId) {
         setIsLoading(true)
-        const categories = await getCategories(params)
-        const foundCategory = categories.find(c => c.id === editId)
-        setCategory(foundCategory)
+        const category = await getCategoryById(editId)
+        setCategory(category)
         setIsLoading(false)
       } else {
         setCategory(undefined)
