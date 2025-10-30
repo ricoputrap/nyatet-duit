@@ -12,6 +12,11 @@ export default async function CategoryTable({ params }: Props) {
   const categories = await getCategories(resolvedParams);
 
   return (
-    <DataTable columns={columns} data={categories} />
+    <DataTable 
+      columns={columns} 
+      data={categories}
+      sortKey={resolvedParams.sortKey}
+      sortOrder={resolvedParams.sortOrder}
+    />
   )
 }

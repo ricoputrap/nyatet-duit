@@ -17,18 +17,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  sortKey?: string
+  sortOrder?: "asc" | "desc"
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  sortKey = "name",
+  sortOrder = "asc",
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
+  const router = useRouter()
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: sortKey,
+      desc: sortOrder === "desc",
+    },
+  ])
+
+  // Update the URL when sorting changes
+  useEffect(() => {
+    if (sorting.length > 0) {
+      const urlParams = new URLSearchParams(window.location.search)
+      const currentSort = sorting[0]
+      
+      urlParams.set('sortKey', currentSort.id)
+      urlParams.set('sortOrder', currentSort.desc ? 'desc' : 'asc')
+      
+      router.replace(`?${urlParams.toString()}`)
+    }
+  }, [sorting, router])
 
   const table = useReactTable({
     data,
