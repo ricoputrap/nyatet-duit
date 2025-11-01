@@ -10,10 +10,10 @@ export default async function ProtectedLayout({
 }) {
 
   // Check if user is authenticated else redirect to login
-  const supabase = await createClient()
-  const { data, error } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
-    redirect('/login')
+    redirect('/login');
   }
   
   return (
