@@ -13,6 +13,7 @@ import {
 import { ICategory } from "../types"
 import { deleteCategory } from "../actions"
 import { useState } from "react"
+import { toast } from "sonner"
 
 interface DeleteCategoryDialogProps {
   category: ICategory | null
@@ -28,6 +29,7 @@ export function DeleteCategoryDialog({ category, open, onOpenChange }: DeleteCat
     
     setIsDeleting(true)
     await deleteCategory(category.id)
+    toast.success('Category deleted successfully')
     setIsDeleting(false)
     onOpenChange(false)
   }
