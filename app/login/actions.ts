@@ -27,13 +27,19 @@ export async function signInWithGoogle(prevState: unknown, formData: FormData) {
   return null
 }
 
-export async function signOut(prevState: unknown, formData: FormData) {
+export async function signOut(prevState?: unknown, formData?: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.auth.signOut()
 
   if (error) {
     console.error('Error signing out:', error)
     return { error: error.message }
+  }
+
+  // Don't redirect here when called from client component
+  // Let the client handle the redirect
+  if (!formData) {
+    return { success: true }
   }
 
   redirect('/login')

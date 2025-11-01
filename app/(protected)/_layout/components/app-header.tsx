@@ -1,5 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { UserProfile } from "./user-profile";
 
 export function AppHeader() {
   return (
@@ -8,6 +9,7 @@ export function AppHeader() {
       <Separator orientation="vertical" className="h-6" />
       <div className="flex flex-1 items-center justify-between">
         <h2 className="text-lg font-semibold">Nyatet Duit</h2>
+        <UserProfile />
       </div>
     </header>
   );
