@@ -4,6 +4,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useBudgetFormStore } from "../store"
 import { createBudget, updateBudget } from "../actions"
 import { toast } from "sonner"
@@ -16,6 +23,7 @@ export function BudgetFormSheet() {
   const isEdit = mode === 'edit'
   const [categories, setCategories] = useState<ICategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(budget?.category_id || '')
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -27,13 +35,19 @@ export function BudgetFormSheet() {
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (budget?.category_id) {
+      setSelectedCategoryId(budget.category_id)
+    }
+  }, [budget])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     
     const formData = new FormData(e.currentTarget)
     const data = {
-      category_id: formData.get('category_id') as string,
+      category_id: selectedCategoryId,
       start_date: formData.get('start_date') as string,
       end_date: formData.get('end_date') as string,
       allocation: parseFloat(formData.get('allocation') as string),
@@ -71,20 +85,21 @@ export function BudgetFormSheet() {
               <Label htmlFor="category_id" className="text-sm font-medium">
                 Category
               </Label>
-              <select
-                id="category_id"
-                name="category_id"
-                defaultValue={budget?.category_id || ''}
-                className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
+              <Select 
+                value={selectedCategoryId} 
+                onValueChange={setSelectedCategoryId}
               >
-                <option value="">Select a category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
