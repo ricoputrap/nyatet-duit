@@ -60,7 +60,7 @@ const navItems: NavItem[] = [
     icon: Banknote,
     items: [
       { title: "Categories", url: "/budgets/categories" },
-      { title: "Budgets", url: "/budgets/list" },
+      { title: "Budgets", url: "/budgets/budgets" },
     ],
   },
   {
