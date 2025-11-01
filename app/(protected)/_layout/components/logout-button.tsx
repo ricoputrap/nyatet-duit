@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react'
 import { LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { SidebarMenuButton } from '@/components/ui/sidebar'
 import { signOut } from '@/app/login/actions'
 
 export function LogoutButton() {
@@ -10,15 +10,14 @@ export function LogoutButton() {
 
   return (
     <form action={formAction}>
-      <Button 
-        type="submit" 
-        variant="ghost" 
-        size="sm"
+      <SidebarMenuButton 
+        type="submit"
         disabled={isPending}
+        className="w-full"
       >
         <LogOut className="h-4 w-4" />
-        {isPending ? 'Signing out...' : 'Logout'}
-      </Button>
+        <span>{isPending ? 'Signing out...' : 'Logout'}</span>
+      </SidebarMenuButton>
     </form>
   )
 }
