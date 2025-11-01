@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useCategoryFormStore } from "../store"
 import { createCategory, updateCategory } from "../actions"
+import { toast } from "sonner"
 
 export function CategoryFormSheet() {
   const { isOpen, mode, category, close } = useCategoryFormStore()
@@ -18,8 +19,10 @@ export function CategoryFormSheet() {
 
     if (isEdit) {
       await updateCategory(category!.id, name);
+      toast.success('Category updated successfully')
     } else {
       await createCategory(name);
+      toast.success('Category created successfully')
     }
     
     close()
