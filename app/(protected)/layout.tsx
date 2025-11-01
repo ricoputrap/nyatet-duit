@@ -3,7 +3,7 @@ import { AppSidebar, AppHeader } from "./_layout";
 import { redirect } from "next/dist/client/components/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function DashboardLayout({
+export default async function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
