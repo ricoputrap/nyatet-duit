@@ -10,7 +10,7 @@ export function CreateBudgetButton() {
   return (
     <Button onClick={openCreate}>
       <Plus className="h-4 w-4" />
-      Add
+      Add Budget
     </Button>
   )
 }
