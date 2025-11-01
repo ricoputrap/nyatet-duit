@@ -153,9 +153,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <LogoutButton />
-      </SidebarFooter>
     </Sidebar>
   );
 }
