@@ -4,8 +4,8 @@ import { ICategoryPageParams } from "./types";
 import CategoryTableLoading from "./components/category-table/loading";
 import Search from "./components/search";
 import SearchLoading from "./components/search/loading";
-import { CategoryFormSheet } from "./components/category-form-sheet";
 import { CreateCategoryButton } from "./components/add-category";
+import FormSheet from "@/components/form-sheet";
 
 export default async function BudgetsCategoriesPage({ 
   searchParams 
@@ -33,7 +33,7 @@ export default async function BudgetsCategoriesPage({
       </Suspense>
 
       {/* No props needed! */}
-      <CategoryFormSheet />
+      <FormSheet />
     </div>
   );
 }
