@@ -1,12 +1,15 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ICategory } from "../../types"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Pencil, Trash2 } from "lucide-react"
-import { useCategoryFormStore } from "../../store"
 import { useState } from "react"
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, Pencil, Trash2 } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import useFormSheetStore from "@/components/form-sheet/store"
+
+import CategoryForm from "../form"
 import { DeleteCategoryDialog } from "../delete-category-dialog"
+import { ICategory } from "../../types"
 
 export const columns: ColumnDef<ICategory>[] = [
   {
@@ -29,11 +32,11 @@ export const columns: ColumnDef<ICategory>[] = [
     size: 100,
     cell: ({ row }) => {
       const category = row.original
-      const openEdit = useCategoryFormStore((state) => state.openEdit)
+      const open = useFormSheetStore((state) => state.open)
       const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
       const handleEdit = () => {
-        openEdit(category) // Instant - no network call!
+        open("Edit Category", <CategoryForm category={category} />)
       }
 
       const handleDelete = () => {
