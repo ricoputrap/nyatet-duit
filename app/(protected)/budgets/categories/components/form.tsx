@@ -1,16 +1,16 @@
 import React from 'react'
 import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
 import useFormSheetStore from "@/components/form-sheet/store"
 import TextField from '@/components/form-sheet/text-field';
 
 import { createCategory, updateCategory } from '../actions';
 import { ICategory } from '../types';
+import ActionButtons from '@/components/form-sheet/action-buttons';
 
 
 interface Props {
-  category?: ICategory | null;
+  category?: ICategory;
 }
 
 export default function CategoryForm({ category }: Props) {
@@ -46,22 +46,7 @@ export default function CategoryForm({ category }: Props) {
         />
       </div>
 
-      <div className="flex gap-3">
-        <Button
-          type="submit"
-          className="flex-1 h-11 font-medium"
-        >
-          {category ? 'Update' : 'Create'}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={close}
-          className="flex-1 h-11"
-        >
-          Cancel
-        </Button>
-      </div>
+      <ActionButtons isEdit={!!category} close={close} />
     </form>
   )
 }
