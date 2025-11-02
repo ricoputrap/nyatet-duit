@@ -5,7 +5,7 @@ import CategoryTableLoading from "./components/category-table/loading";
 import Search from "./components/search";
 import SearchLoading from "./components/search/loading";
 import { CreateCategoryButton } from "./components/add-category";
-import FormSheet from "@/components/form-sheet";
+import { FormSheet } from "@/components/form-sheet";
 
 export default async function BudgetsCategoriesPage({ 
   searchParams 

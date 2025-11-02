@@ -1,12 +1,9 @@
 import React from 'react'
 import { toast } from 'sonner';
 
-import useFormSheetStore from "@/components/form-sheet/store"
-import TextField from '@/components/form-sheet/text-field';
-
+import { TextField, ActionButtons, useFormSheetStore} from "@/components/form-sheet"
 import { createCategory, updateCategory } from '../actions';
 import { ICategory } from '../types';
-import ActionButtons from '@/components/form-sheet/action-buttons';
 
 
 interface Props {
