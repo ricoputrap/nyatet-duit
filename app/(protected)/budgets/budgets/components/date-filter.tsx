@@ -16,40 +16,51 @@ export function DateFilter({ searchParams }: DateFilterProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  const handleDateChange = (date: string) => {
+  const handleDateChange = (type: 'start_date' | 'end_date', value: string) => {
     const urlParams = new URLSearchParams(window.location.search)
-    if (date) {
-      urlParams.set('date', date)
+    if (value) {
+      urlParams.set(type, value)
     } else {
-      urlParams.delete('date')
+      urlParams.delete(type)
     }
     startTransition(() => {
       router.replace(`?${urlParams.toString()}`)
     })
   }
 
-  const clearDate = () => {
+  const clearFilters = () => {
     const urlParams = new URLSearchParams(window.location.search)
-    urlParams.delete('date')
+    urlParams.delete('start_date')
+    urlParams.delete('end_date')
     startTransition(() => {
       router.replace(`?${urlParams.toString()}`)
     })
   }
 
+  const hasFilters = params.start_date || params.end_date
+
   return (
     <div className="flex items-center gap-2">
       <Input
         type="date"
-        defaultValue={params.date || ''}
-        onChange={(e) => handleDateChange(e.target.value)}
-        className="w-auto"
+        value={params.start_date || ''}
+        onChange={(e) => handleDateChange('start_date', e.target.value)}
+        className="w-auto h-10"
         disabled={isPending}
       />
-      {params.date && (
+      <span className="text-muted-foreground">-</span>
+      <Input
+        type="date"
+        value={params.end_date || ''}
+        onChange={(e) => handleDateChange('end_date', e.target.value)}
+        className="w-auto h-10"
+        disabled={isPending}
+      />
+      {hasFilters && (
         <Button
           variant="outline"
           size="sm"
-          onClick={clearDate}
+          onClick={clearFilters}
           disabled={isPending}
         >
           Clear

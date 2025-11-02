@@ -10,7 +10,8 @@ export async function getBudgets(params: IBudgetPageParams): Promise<IBudget[]> 
     search = "", 
     sortKey = "start_date", 
     sortOrder = "desc",
-    date
+    start_date,
+    end_date
   } = params;
 
   const user = await getUser();
@@ -32,11 +33,16 @@ export async function getBudgets(params: IBudgetPageParams): Promise<IBudget[]> 
     `)
     .eq("user_id", user?.id);
 
-  // Filter by date if provided (show budgets that overlap with the selected date/month)
-  if (date) {
-    query = query
-      .lte("start_date", date)
-      .gte("end_date", date);
+  // Filter by date range if provided
+  // Show budgets that overlap with the selected date range
+  if (start_date) {
+    // Budget's end_date must be >= filter's start_date (budget hasn't ended before filter starts)
+    query = query.gte("end_date", start_date);
+  }
+  
+  if (end_date) {
+    // Budget's start_date must be <= filter's end_date (budget hasn't started after filter ends)
+    query = query.lte("start_date", end_date);
   }
 
   const { data: budgets, error } = await query

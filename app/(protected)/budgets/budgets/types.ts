@@ -15,7 +15,8 @@ export interface IBudgetPageParams {
   search?: string
   sortKey?: 'category_name' | 'start_date' | 'end_date' | 'allocation'
   sortOrder?: 'asc' | 'desc'
-  date?: string // For filtering by date/month
+  start_date?: string // Filter: budgets that end on or after this date
+  end_date?: string   // Filter: budgets that start on or before this date
 }
 
 export interface IBudgetFormData {
