@@ -63,7 +63,7 @@ export function DateFilter({ searchParams }: DateFilterProps) {
             className="h-10 w-auto justify-between font-normal"
             disabled={isPending}
           >
-            {params.start_date ? new Date(params.start_date).toLocaleDateString() : "Start Date"}
+            {params.start_date ? new Date(params.start_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "Start Date"}
             <CalendarIcon className="ml-2 h-4 w-4" />
           </Button>
         </PopoverTrigger>
@@ -88,7 +88,7 @@ export function DateFilter({ searchParams }: DateFilterProps) {
             className="h-10 w-auto justify-between font-normal"
             disabled={isPending}
           >
-            {params.end_date ? new Date(params.end_date).toLocaleDateString() : "End Date"}
+            {params.end_date ? new Date(params.end_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "End Date"}
             <CalendarIcon className="ml-2 h-4 w-4" />
           </Button>
         </PopoverTrigger>
