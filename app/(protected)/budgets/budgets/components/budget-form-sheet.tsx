@@ -31,6 +31,7 @@ export function BudgetFormSheet() {
   const [endDate, setEndDate] = useState<Date | undefined>(budget?.end_date ? new Date(budget.end_date) : undefined)
   const [startDateOpen, setStartDateOpen] = useState(false)
   const [endDateOpen, setEndDateOpen] = useState(false)
+  const [allocation, setAllocation] = useState<string>(budget?.allocation?.toString() || '')
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -52,6 +53,9 @@ export function BudgetFormSheet() {
     if (budget?.end_date) {
       setEndDate(new Date(budget.end_date))
     }
+    if (budget?.allocation) {
+      setAllocation(budget.allocation.toString())
+    }
   }, [budget])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,12 +68,11 @@ export function BudgetFormSheet() {
       return
     }
 
-    const formData = new FormData(e.currentTarget)
     const data = {
       category_id: selectedCategoryId,
       start_date: startDate.toISOString().split('T')[0],
       end_date: endDate.toISOString().split('T')[0],
-      allocation: parseFloat(formData.get('allocation') as string),
+      allocation: parseFloat(allocation),
     }
 
     let result
@@ -85,12 +88,25 @@ export function BudgetFormSheet() {
       toast.error(result.error)
     } else {
       toast.success(isEdit ? 'Budget updated successfully' : 'Budget created successfully')
+      resetForm()
       close()
     }
   }
 
+  const resetForm = () => {
+    setSelectedCategoryId('')
+    setStartDate(undefined)
+    setEndDate(undefined)
+    setAllocation('')
+  }
+
+  const handleClose = () => {
+    resetForm()
+    close()
+  }
+
   return (
-    <Sheet open={isOpen} onOpenChange={close}>
+    <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent className="sm:max-w-md flex flex-col">
         <SheetHeader className="space-y-2">
           <SheetTitle className="text-xl">
@@ -193,7 +209,8 @@ export function BudgetFormSheet() {
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={budget?.allocation || ''}
+                value={allocation}
+                onChange={(e) => setAllocation(e.target.value)}
                 placeholder="0.00"
                 className="h-11"
                 required
@@ -212,7 +229,7 @@ export function BudgetFormSheet() {
             <Button 
               type="button" 
               variant="outline" 
-              onClick={close}
+              onClick={handleClose}
               className="flex-1 h-11"
               disabled={isLoading}
             >
