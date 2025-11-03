@@ -4,6 +4,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CalendarIcon } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -24,6 +27,10 @@ export function BudgetFormSheet() {
   const [categories, setCategories] = useState<ICategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(budget?.category_id || '')
+  const [startDate, setStartDate] = useState<Date | undefined>(budget?.start_date ? new Date(budget.start_date) : undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(budget?.end_date ? new Date(budget.end_date) : undefined)
+  const [startDateOpen, setStartDateOpen] = useState(false)
+  const [endDateOpen, setEndDateOpen] = useState(false)
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -39,17 +46,29 @@ export function BudgetFormSheet() {
     if (budget?.category_id) {
       setSelectedCategoryId(budget.category_id)
     }
+    if (budget?.start_date) {
+      setStartDate(new Date(budget.start_date))
+    }
+    if (budget?.end_date) {
+      setEndDate(new Date(budget.end_date))
+    }
   }, [budget])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     
+    if (!startDate || !endDate) {
+      toast.error('Please select both start and end dates')
+      setIsLoading(false)
+      return
+    }
+
     const formData = new FormData(e.currentTarget)
     const data = {
       category_id: selectedCategoryId,
-      start_date: formData.get('start_date') as string,
-      end_date: formData.get('end_date') as string,
+      start_date: startDate.toISOString().split('T')[0],
+      end_date: endDate.toISOString().split('T')[0],
       allocation: parseFloat(formData.get('allocation') as string),
     }
 
@@ -106,28 +125,56 @@ export function BudgetFormSheet() {
               <Label htmlFor="start_date" className="text-sm font-medium">
                 Start Date
               </Label>
-              <Input
-                id="start_date"
-                name="start_date"
-                type="date"
-                defaultValue={budget?.start_date || ''}
-                className="h-11"
-                required
-              />
+              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full h-11 justify-between font-normal"
+                    disabled={isLoading}
+                  >
+                    {startDate ? startDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "Select start date"}
+                    <CalendarIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => {
+                      setStartDate(date)
+                      setStartDateOpen(false)
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="end_date" className="text-sm font-medium">
                 End Date
               </Label>
-              <Input
-                id="end_date"
-                name="end_date"
-                type="date"
-                defaultValue={budget?.end_date || ''}
-                className="h-11"
-                required
-              />
+              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full h-11 justify-between font-normal"
+                    disabled={isLoading}
+                  >
+                    {endDate ? endDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "Select end date"}
+                    <CalendarIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={(date) => {
+                      setEndDate(date)
+                      setEndDateOpen(false)
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="space-y-2">
