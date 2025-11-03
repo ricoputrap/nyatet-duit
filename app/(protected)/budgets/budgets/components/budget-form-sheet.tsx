@@ -160,6 +160,12 @@ export function BudgetFormSheet() {
                       setStartDate(date)
                       setStartDateOpen(false)
                     }}
+                    disabled={(date) => {
+                      if (endDate) {
+                        return date > endDate
+                      }
+                      return false
+                    }}
                   />
                 </PopoverContent>
               </Popover>
