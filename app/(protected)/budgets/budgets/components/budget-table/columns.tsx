@@ -37,9 +37,9 @@ export const columns: ColumnDef<IBudget>[] = [
     header: "Allocation",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("allocation"))
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("id-ID", {
         style: "currency",
-        currency: "USD",
+        currency: "IDR",
       }).format(amount)
       return <div className="font-medium">{formatted}</div>
     },
@@ -51,9 +51,9 @@ export const columns: ColumnDef<IBudget>[] = [
       const allocation = parseFloat(row.getValue("allocation"))
       const spent = row.original.spent || 0
       const remaining = allocation - spent
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("id-ID", {
         style: "currency",
-        currency: "USD",
+        currency: "IDR",
       }).format(remaining)
       
       const textColor = remaining < 0 ? "text-red-600" : remaining < allocation * 0.2 ? "text-yellow-600" : "text-green-600"
