@@ -100,6 +100,13 @@ export function DateFilter({ searchParams }: DateFilterProps) {
               handleDateChange('end_date', formatDateToString(date))
               setEndDateOpen(false)
             }}
+            disabled={(date) => {
+              if (params.start_date) {
+                const startDate = new Date(params.start_date)
+                return date < startDate
+              }
+              return false
+            }}
           />
         </PopoverContent>
       </Popover>
