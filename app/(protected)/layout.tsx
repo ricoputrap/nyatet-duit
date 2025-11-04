@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar, AppHeader } from "./_layout";
 import { AuthCheck } from "@/components/auth-check";
+import { LoadingScreen } from "@/components/loading-screen";
 import { Suspense } from "react";
 
 export default async function ProtectedLayout({
@@ -9,7 +10,7 @@ export default async function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingScreen />}>
       <AuthCheck />
       <SidebarProvider>
         <AppSidebar />
