@@ -8,12 +8,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 
 interface DatePickerProps {
-  date?: Date
+  date?: Date | string
   onDateChange?: (date: Date | undefined) => void
   placeholder?: string
   disabled?: boolean
   disabledDates?: (date: Date) => boolean
   className?: string
+  buttonClassName?: string
 }
 
 export function DatePicker({
@@ -23,8 +24,12 @@ export function DatePicker({
   disabled = false,
   disabledDates,
   className,
+  buttonClassName,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
+
+  // Convert string date to Date object if needed
+  const dateObj = typeof date === 'string' ? (date ? new Date(date) : undefined) : date
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -33,13 +38,14 @@ export function DatePicker({
           variant="outline"
           className={cn(
             "w-full justify-between font-normal",
-            !date && "text-muted-foreground",
+            !dateObj && "text-muted-foreground",
+            buttonClassName,
             className
           )}
           disabled={disabled}
         >
-          {date
-            ? date.toLocaleDateString("en-US", {
+          {dateObj
+            ? dateObj.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -51,7 +57,7 @@ export function DatePicker({
       <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
-          selected={date}
+          selected={dateObj}
           onSelect={(selectedDate) => {
             onDateChange?.(selectedDate)
             setOpen(false)
