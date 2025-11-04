@@ -35,7 +35,7 @@ export default function NumberField({
         min={min}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder || "0.00"}
+        placeholder={placeholder || "0"}
         className="h-11"
         required={required}
       />

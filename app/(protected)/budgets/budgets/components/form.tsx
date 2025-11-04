@@ -127,7 +127,7 @@ export default function BudgetForm({ budget }: Props) {
           title="Allocation Amount"
           value={allocation}
           onChange={setAllocation}
-          placeholder="0.00"
+          placeholder="0"
           required
         />
       </div>
