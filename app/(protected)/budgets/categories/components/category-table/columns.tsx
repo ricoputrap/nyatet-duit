@@ -25,11 +25,13 @@ export const columns: ColumnDef<ICategory>[] = [
         </Button>
       )
     },
+    size: Number.MAX_SAFE_INTEGER,
   },
   {
     id: "actions",
-    header: () => <div className="text-right">Actions</div>,
+    header: () => <div className="text-right px-3">Actions</div>,
     size: 100,
+    enableResizing: false,
     cell: ({ row }) => {
       const category = row.original
       const open = useFormSheetStore((state) => state.open)
