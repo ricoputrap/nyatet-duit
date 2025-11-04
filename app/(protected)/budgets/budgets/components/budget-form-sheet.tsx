@@ -18,6 +18,7 @@ import { toast } from "sonner"
 import { useState, useEffect } from "react"
 import { getCategories } from "../../categories/actions"
 import { ICategory } from "../../categories/types"
+import { formatDateToYYYYMMDD } from "@/lib/utils"
 
 export function BudgetFormSheet() {
   const { isOpen, mode, budget, close } = useBudgetFormStore()
@@ -66,8 +67,8 @@ export function BudgetFormSheet() {
 
     const data = {
       category_id: selectedCategoryId,
-      start_date: startDate.toISOString().split('T')[0],
-      end_date: endDate.toISOString().split('T')[0],
+      start_date: formatDateToYYYYMMDD(startDate),
+      end_date: formatDateToYYYYMMDD(endDate),
       allocation: parseFloat(allocation),
     }
 
