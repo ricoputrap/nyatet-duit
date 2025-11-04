@@ -4,9 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon } from "lucide-react"
+import { DatePicker } from "@/components/ui/date-picker"
 import {
   Select,
   SelectContent,
@@ -29,8 +27,6 @@ export function BudgetFormSheet() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(budget?.category_id || '')
   const [startDate, setStartDate] = useState<Date | undefined>(budget?.start_date ? new Date(budget.start_date) : undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(budget?.end_date ? new Date(budget.end_date) : undefined)
-  const [startDateOpen, setStartDateOpen] = useState(false)
-  const [endDateOpen, setEndDateOpen] = useState(false)
   const [allocation, setAllocation] = useState<string>(budget?.allocation?.toString() || '')
 
   useEffect(() => {
@@ -141,68 +137,38 @@ export function BudgetFormSheet() {
               <Label htmlFor="start_date" className="text-sm font-medium">
                 Start Date
               </Label>
-              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full h-11 justify-between font-normal"
-                    disabled={isLoading}
-                  >
-                    {startDate ? startDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "Select start date"}
-                    <CalendarIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={(date) => {
-                      setStartDate(date)
-                      setStartDateOpen(false)
-                    }}
-                    disabled={(date) => {
-                      if (endDate) {
-                        return date > endDate
-                      }
-                      return false
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                date={startDate}
+                onDateChange={setStartDate}
+                placeholder="Select start date"
+                disabled={isLoading}
+                disabledDates={(date) => {
+                  if (endDate) {
+                    return date > endDate
+                  }
+                  return false
+                }}
+                className="h-11"
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="end_date" className="text-sm font-medium">
                 End Date
               </Label>
-              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full h-11 justify-between font-normal"
-                    disabled={isLoading}
-                  >
-                    {endDate ? endDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "Select end date"}
-                    <CalendarIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    onSelect={(date) => {
-                      setEndDate(date)
-                      setEndDateOpen(false)
-                    }}
-                    disabled={(date) => {
-                      if (startDate) {
-                        return date < startDate
-                      }
-                      return false
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                date={endDate}
+                onDateChange={setEndDate}
+                placeholder="Select end date"
+                disabled={isLoading}
+                disabledDates={(date) => {
+                  if (startDate) {
+                    return date < startDate
+                  }
+                  return false
+                }}
+                className="h-11"
+              />
             </div>
 
             <div className="space-y-2">
