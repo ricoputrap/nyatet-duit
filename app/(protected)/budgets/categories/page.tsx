@@ -13,7 +13,7 @@ export default async function BudgetsCategoriesPage({
   searchParams: Promise<ICategoryPageParams> 
 }) {
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-1 flex-col gap-4 px-2">
       <div>
         <h1 className="text-2xl font-bold">Categories</h1>
         <p className="text-muted-foreground">
