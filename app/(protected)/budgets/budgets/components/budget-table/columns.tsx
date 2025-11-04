@@ -4,7 +4,8 @@ import { ColumnDef } from "@tanstack/react-table"
 import { IBudget } from "../../types"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
-import { useBudgetFormStore } from "../../store"
+import { useFormSheetStore } from "@/components/form-sheet"
+import BudgetForm from "../form"
 import { useState } from "react"
 import { DeleteBudgetDialog } from "../delete-budget-dialog"
 
@@ -66,15 +67,19 @@ export const columns: ColumnDef<IBudget>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const budget = row.original
-      const openEdit = useBudgetFormStore((state) => state.openEdit)
+      const open = useFormSheetStore((state) => state.open)
       const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+      const handleEdit = () => {
+        open("Edit Budget", <BudgetForm budget={budget} />)
+      }
 
       return (
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon-sm"
-            onClick={() => openEdit(budget)}
+            onClick={handleEdit}
           >
             <Pencil className="h-4 w-4" />
           </Button>

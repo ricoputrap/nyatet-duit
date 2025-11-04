@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { useBudgetFormStore } from "../store"
+import { useFormSheetStore } from "@/components/form-sheet"
+import BudgetForm from "./form"
 
 export function CreateBudgetButton() {
-  const openCreate = useBudgetFormStore((state) => state.openCreate)
+  const open = useFormSheetStore((state) => state.open)
 
   return (
-    <Button onClick={openCreate}>
+    <Button onClick={() => open("Create Budget", <BudgetForm />)}>
       <Plus className="h-4 w-4" />
       Add Budget
     </Button>

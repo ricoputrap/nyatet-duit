@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { SearchBudget } from "./components/search"
 import { DateFilter } from "./components/date-filter"
 import { CreateBudgetButton } from "./components/add-budget"
-import { BudgetFormSheet } from "./components/budget-form-sheet"
+import { FormSheet } from "@/components/form-sheet"
 import { BudgetTableWrapper } from "./components/budget-table-wrapper"
 import { BudgetTableSkeleton } from "./components/budget-table/loading"
 import { SearchLoading } from "./components/search/loading"
@@ -37,7 +37,7 @@ export default function BudgetsPage({ searchParams }: PageProps) {
         <BudgetTableWrapper searchParams={searchParams} />
       </Suspense>
 
-      <BudgetFormSheet />
+      <FormSheet />
     </div>
   )
 }
