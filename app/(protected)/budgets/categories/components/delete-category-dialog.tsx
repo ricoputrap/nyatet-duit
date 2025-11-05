@@ -1,15 +1,6 @@
 "use client"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import ConfirmationDialog from "@/components/ui/confirmation-dialog"
 import { ICategory } from "../types"
 import { deleteCategory } from "../actions"
 import { useState } from "react"
@@ -35,25 +26,19 @@ export function DeleteCategoryDialog({ category, open, onOpenChange }: DeleteCat
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete Category</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete <strong>{category?.name}</strong>? This action cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="bg-destructive"
-          >
-            {isDeleting ? "Deleting..." : "Delete"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmationDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Delete Category"
+      description={
+        <>
+          Are you sure you want to delete <strong>{category?.name}</strong>? This action cannot be undone.
+        </>
+      }
+      actionLabel="Delete"
+      loadingLabel="Deleting..."
+      onConfirm={handleDelete}
+      isLoading={isDeleting}
+    />
   )
 }

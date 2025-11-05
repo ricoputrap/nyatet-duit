@@ -1,15 +1,6 @@
 "use client"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import ConfirmationDialog from "@/components/ui/confirmation-dialog"
 import { IBudget } from "../types"
 import { deleteBudget } from "../actions"
 import { useState } from "react"
@@ -40,25 +31,19 @@ export function DeleteBudgetDialog({ budget, open, onOpenChange }: DeleteBudgetD
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete Budget</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete the budget for <strong>{budget?.category_name}</strong>? This action cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="bg-destructive"
-          >
-            {isDeleting ? "Deleting..." : "Delete"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmationDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Delete Budget"
+      description={
+        <>
+          Are you sure you want to delete the budget for <strong>{budget?.category_name}</strong>? This action cannot be undone.
+        </>
+      }
+      actionLabel="Delete"
+      loadingLabel="Deleting..."
+      onConfirm={handleDelete}
+      isLoading={isDeleting}
+    />
   )
 }

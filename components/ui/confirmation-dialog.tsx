@@ -14,11 +14,13 @@ import {
 
 interface Props {
   title?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   actionLabel?: string;
+  loadingLabel?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
+  isLoading?: boolean;
 }
 
 export default function ConfirmationDialog({
@@ -27,7 +29,9 @@ export default function ConfirmationDialog({
   title = "Are you sure?",
   description = "This action cannot be undone.",
   actionLabel = "Confirm",
-  onConfirm
+  loadingLabel,
+  onConfirm,
+  isLoading = false
 }: Props) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -39,14 +43,15 @@ export default function ConfirmationDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">
+          <AlertDialogCancel className="cursor-pointer" disabled={isLoading}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             className="bg-destructive cursor-pointer"
+            disabled={isLoading}
           >
-            {actionLabel}
+            {isLoading ? (loadingLabel || `...`) : actionLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
