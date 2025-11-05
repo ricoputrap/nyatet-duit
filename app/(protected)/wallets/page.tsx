@@ -5,7 +5,6 @@ import WalletTableLoading from "./components/wallet-table/loading"
 import SearchInput from "@/components/ui/search-input"
 import { CreateWalletButton } from "./components/add-wallet"
 import { FormSheet } from "@/components/form-sheet"
-import { Skeleton } from "@/components/ui/skeleton"
 
 export default async function WalletsPage({
   searchParams,

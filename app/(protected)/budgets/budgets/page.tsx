@@ -5,7 +5,6 @@ import { CreateBudgetButton } from "./components/add-budget"
 import { FormSheet } from "@/components/form-sheet"
 import { BudgetTableWrapper } from "./components/budget-table-wrapper"
 import { BudgetTableSkeleton } from "./components/budget-table/loading"
-import { Skeleton } from "@/components/ui/skeleton"
 import { DateFilterLoading } from "./components/date-filter/loading"
 import { IBudgetPageParams } from "./types"
 
