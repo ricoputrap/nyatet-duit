@@ -1,11 +1,11 @@
 import { Suspense } from "react"
-import { SearchBudget } from "./components/search"
+import SearchInput from "@/components/ui/search-input"
 import { DateFilter } from "./components/date-filter"
 import { CreateBudgetButton } from "./components/add-budget"
 import { FormSheet } from "@/components/form-sheet"
 import { BudgetTableWrapper } from "./components/budget-table-wrapper"
 import { BudgetTableSkeleton } from "./components/budget-table/loading"
-import { SearchLoading } from "./components/search/loading"
+import { Skeleton } from "@/components/ui/skeleton"
 import { DateFilterLoading } from "./components/date-filter/loading"
 import { IBudgetPageParams } from "./types"
 
@@ -26,9 +26,7 @@ export default function BudgetsPage({ searchParams }: PageProps) {
           <Suspense fallback={<DateFilterLoading />}>
             <DateFilter searchParams={searchParams} />
           </Suspense>
-          <Suspense fallback={<SearchLoading />}>
-            <SearchBudget searchParams={searchParams} />
-          </Suspense>
+          <SearchInput searchParams={searchParams} placeholder="Search budgets..." />
         </div>
         <CreateBudgetButton />
       </div>

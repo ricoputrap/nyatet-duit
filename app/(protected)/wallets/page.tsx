@@ -2,10 +2,10 @@ import { Suspense } from "react"
 import WalletTable from "./components/wallet-table"
 import { IWalletPageParams } from "./types"
 import WalletTableLoading from "./components/wallet-table/loading"
-import Search from "./components/search"
-import SearchLoading from "./components/search/loading"
+import SearchInput from "@/components/ui/search-input"
 import { CreateWalletButton } from "./components/add-wallet"
 import { FormSheet } from "@/components/form-sheet"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default async function WalletsPage({
   searchParams,
@@ -22,9 +22,7 @@ export default async function WalletsPage({
       </div>
 
       <div className="flex items-center justify-between gap-4">
-        <Suspense fallback={<SearchLoading />}>
-          <Search searchParams={searchParams} />
-        </Suspense>
+        <SearchInput searchParams={searchParams} placeholder="Search wallets..." />
         <CreateWalletButton />
       </div>
 
