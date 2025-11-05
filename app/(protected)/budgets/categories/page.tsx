@@ -2,10 +2,9 @@ import { Suspense } from "react";
 import CategoryTable from "./components/category-table";
 import { ICategoryPageParams } from "./types";
 import CategoryTableLoading from "./components/category-table/loading";
-import Search from "./components/search";
-import SearchLoading from "./components/search/loading";
 import { CreateCategoryButton } from "./components/add-category";
 import { FormSheet } from "@/components/form-sheet";
+import SearchInput from "@/components/ui/search-input";
 
 export default async function BudgetsCategoriesPage({ 
   searchParams 
@@ -22,9 +21,10 @@ export default async function BudgetsCategoriesPage({
       </div>
 
       <div className="flex items-center justify-between gap-4">
-        <Suspense fallback={<SearchLoading />}>
-          <Search searchParams={searchParams} />
-        </Suspense>
+        <SearchInput
+          placeholder="Search category name..."
+          searchParams={searchParams}
+        />
         <CreateCategoryButton />
       </div>
 
