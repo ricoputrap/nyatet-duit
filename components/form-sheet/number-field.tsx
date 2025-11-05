@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 interface Props {
   id: string;
   title: string;
-  value: string;
-  onChange: (value: string) => void;
+  defaultValue?: number;
+  value?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   required?: boolean;
   step?: string;
@@ -15,6 +16,7 @@ interface Props {
 export default function NumberField({
   id,
   title,
+  defaultValue,
   value,
   onChange,
   placeholder,
@@ -33,9 +35,10 @@ export default function NumberField({
         type="number"
         step={step}
         min={min}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder || "0"}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={(e) => onChange?.(e.target.value)}
         className="h-11"
         required={required}
       />
