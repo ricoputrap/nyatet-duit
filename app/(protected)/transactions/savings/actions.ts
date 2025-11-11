@@ -49,7 +49,7 @@ export async function getSavingTransactions(params: ISavingTransactionPageParams
     return []
   }
 
-  return data.map((transaction: any) => ({
+  let transactions = data.map((transaction: any) => ({
     id: transaction.id,
     date: transaction.date,
     amount: transaction.amount,
@@ -61,6 +61,18 @@ export async function getSavingTransactions(params: ISavingTransactionPageParams
     created_at: transaction.created_at,
     updated_at: transaction.updated_at,
   }))
+
+  // Apply search filter on the mapped data
+  if (params.search) {
+    const searchLower = params.search.toLowerCase()
+    transactions = transactions.filter((transaction) => {
+      const walletName = transaction.wallet_name?.toLowerCase() || ''
+      const savingName = transaction.saving_name?.toLowerCase() || ''
+      return walletName.includes(searchLower) || savingName.includes(searchLower)
+    })
+  }
+
+  return transactions
 }
 
 export async function createSavingTransaction(data: ISavingTransactionFormData) {
