@@ -35,7 +35,7 @@ export function DeleteSavingTransactionDialog({ transaction, open, onOpenChange 
       title="Delete Saving Transaction"
       description={
         <>
-          Are you sure you want to delete <strong>{transaction.name}</strong>? This action cannot be undone.
+          Are you sure you want to delete this saving transaction? This action cannot be undone.
         </>
       }
       actionLabel="Delete"

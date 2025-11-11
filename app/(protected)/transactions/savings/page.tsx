@@ -19,7 +19,6 @@ export default function TransactionsSavingsPage({ searchParams }: PageProps) {
       title="Savings"
       description="Track and manage your saving transactions"
       searchParams={searchParams}
-      searchPlaceholder="Search transaction name..."
       createButton={<CreateSavingTransactionButton />}
       tableComponent={<SavingTransactionTable params={searchParams} />}
       tableLoadingComponent={<SavingTransactionTableLoading />}

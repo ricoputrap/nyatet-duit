@@ -51,9 +51,6 @@ export default function SavingTransactionForm({ transaction }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const formData = new FormData(e.currentTarget)
-    const name = (formData.get('name') as string) || ''
-
     if (!date) {
       toast.error('Please select a date')
       return
@@ -69,14 +66,8 @@ export default function SavingTransactionForm({ transaction }: Props) {
       return
     }
 
-    if (!name.trim()) {
-      toast.error('Please enter a transaction name')
-      return
-    }
-
     const data = {
       date: formatDateToYYYYMMDD(date),
-      name: name.trim(),
       amount: parseFloat(amount),
       wallet_id: selectedWalletId,
       saving_id: selectedSavingId,
@@ -116,14 +107,6 @@ export default function SavingTransactionForm({ transaction }: Props) {
           date={date}
           onDateChange={setDate}
           placeholder="Select date"
-        />
-
-        <TextField
-          id="name"
-          title="Transaction Name"
-          defaultValue={transaction?.name || ''}
-          placeholder="Enter transaction name"
-          required
         />
 
         <NumberField

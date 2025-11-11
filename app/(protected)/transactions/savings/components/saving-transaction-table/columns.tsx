@@ -19,13 +19,6 @@ export const columns: ColumnDef<ISavingTransaction>[] = [
     },
   },
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("name")}</div>
-    },
-  },
-  {
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {

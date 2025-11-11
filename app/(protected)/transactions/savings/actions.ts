@@ -19,11 +19,6 @@ export async function getSavingTransactions(params: ISavingTransactionPageParams
     `)
     .eq('user_id', user.id)
 
-  // Search filter
-  if (params.search) {
-    query = query.ilike('name', `%${params.search}%`)
-  }
-
   // Wallet filter
   if (params.wallet_id) {
     query = query.eq('wallet_id', params.wallet_id)
@@ -57,7 +52,6 @@ export async function getSavingTransactions(params: ISavingTransactionPageParams
   return data.map((transaction: any) => ({
     id: transaction.id,
     date: transaction.date,
-    name: transaction.name,
     amount: transaction.amount,
     wallet_id: transaction.wallet_id,
     wallet_name: transaction.wallet?.name,
@@ -112,7 +106,6 @@ export async function createSavingTransaction(data: ISavingTransactionFormData) 
     .from('saving_transactions')
     .insert({
       date: data.date,
-      name: data.name,
       amount: data.amount,
       wallet_id: data.wallet_id,
       saving_id: data.saving_id,
@@ -232,7 +225,6 @@ export async function updateSavingTransaction(id: string, data: ISavingTransacti
     .from('saving_transactions')
     .update({
       date: data.date,
-      name: data.name,
       amount: data.amount,
       wallet_id: data.wallet_id,
       saving_id: data.saving_id,
