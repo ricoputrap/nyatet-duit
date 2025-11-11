@@ -25,7 +25,7 @@ export default function TransferForm({ transfer }: Props) {
   const close = useFormSheetStore((state) => state.close)
   
   const [wallets, setWallets] = useState<IWallet[]>([])
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState<string>(transfer?.amount?.toString() || '')
   const [date, setDate] = useState<Date | undefined>(
     transfer?.date ? new Date(transfer.date) : new Date()
   )
