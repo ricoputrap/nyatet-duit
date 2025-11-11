@@ -78,12 +78,12 @@ export async function getExpenses(params: IExpensePageParams): Promise<IExpense[
   return transformedExpenses
 }
 
-// TODO decrement wallet balance when creating expense
 export async function createExpense(data: IExpenseFormData) {
   const supabase = await createClient()
   const user = await getUser()
 
-  const { error } = await supabase
+  // Start a transaction by inserting expense and updating wallet balance
+  const { error: expenseError } = await supabase
     .from('expenses')
     .insert([{
       name: data.name,
@@ -94,20 +94,57 @@ export async function createExpense(data: IExpenseFormData) {
       user_id: user?.id
     }])
 
-  if (error) {
-    console.error("Error creating expense:", error)
-    return { error: error.message }
+  if (expenseError) {
+    console.error("Error creating expense:", expenseError)
+    return { error: expenseError.message }
+  }
+
+  // Decrement wallet balance
+  const { data: wallet, error: walletFetchError } = await supabase
+    .from('wallets')
+    .select('balance')
+    .eq('id', data.wallet_id)
+    .single()
+
+  if (walletFetchError) {
+    console.error("Error fetching wallet:", walletFetchError)
+    return { error: "Failed to fetch wallet balance" }
+  }
+
+  const newBalance = wallet.balance - data.amount
+
+  const { error: walletUpdateError } = await supabase
+    .from('wallets')
+    .update({ balance: newBalance })
+    .eq('id', data.wallet_id)
+
+  if (walletUpdateError) {
+    console.error("Error updating wallet balance:", walletUpdateError)
+    return { error: "Failed to update wallet balance" }
   }
 
   revalidatePath('/transactions/expenses')
+  revalidatePath('/wallets')
   return { success: true }
 }
 
-// TODO adjust wallet balance when updating expense
 export async function updateExpense(id: string, data: IExpenseFormData) {
   const supabase = await createClient()
 
-  const { error } = await supabase
+  // Get the old expense data first
+  const { data: oldExpense, error: fetchError } = await supabase
+    .from('expenses')
+    .select('amount, wallet_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) {
+    console.error("Error fetching old expense:", fetchError)
+    return { error: "Failed to fetch expense data" }
+  }
+
+  // Update the expense
+  const { error: updateError } = await supabase
     .from('expenses')
     .update({
       name: data.name,
@@ -118,29 +155,116 @@ export async function updateExpense(id: string, data: IExpenseFormData) {
     })
     .eq('id', id)
 
-  if (error) {
-    console.error("Error updating expense:", error)
-    return { error: error.message }
+  if (updateError) {
+    console.error("Error updating expense:", updateError)
+    return { error: updateError.message }
+  }
+
+  // If wallet changed, restore old wallet balance and deduct from new wallet
+  if (oldExpense.wallet_id !== data.wallet_id) {
+    // Restore old wallet balance
+    const { data: oldWallet, error: oldWalletFetchError } = await supabase
+      .from('wallets')
+      .select('balance')
+      .eq('id', oldExpense.wallet_id)
+      .single()
+
+    if (!oldWalletFetchError && oldWallet) {
+      await supabase
+        .from('wallets')
+        .update({ balance: oldWallet.balance + oldExpense.amount })
+        .eq('id', oldExpense.wallet_id)
+    }
+
+    // Deduct from new wallet
+    const { data: newWallet, error: newWalletFetchError } = await supabase
+      .from('wallets')
+      .select('balance')
+      .eq('id', data.wallet_id)
+      .single()
+
+    if (!newWalletFetchError && newWallet) {
+      await supabase
+        .from('wallets')
+        .update({ balance: newWallet.balance - data.amount })
+        .eq('id', data.wallet_id)
+    }
+  } else {
+    // Same wallet, adjust balance by the difference
+    const difference = data.amount - oldExpense.amount
+
+    if (difference !== 0) {
+      const { data: wallet, error: walletFetchError } = await supabase
+        .from('wallets')
+        .select('balance')
+        .eq('id', data.wallet_id)
+        .single()
+
+      if (!walletFetchError && wallet) {
+        await supabase
+          .from('wallets')
+          .update({ balance: wallet.balance - difference })
+          .eq('id', data.wallet_id)
+      }
+    }
   }
 
   revalidatePath('/transactions/expenses')
+  revalidatePath('/wallets')
   return { success: true }
 }
 
-// TODO adjust wallet balance when deleting expense
 export async function deleteExpense(id: string) {
   const supabase = await createClient()
 
-  const { error } = await supabase
+  // Get the expense data before deleting
+  const { data: expense, error: fetchError } = await supabase
+    .from('expenses')
+    .select('amount, wallet_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) {
+    console.error("Error fetching expense:", fetchError)
+    return { error: "Failed to fetch expense data" }
+  }
+
+  // Delete the expense
+  const { error: deleteError } = await supabase
     .from('expenses')
     .delete()
     .eq('id', id)
 
-  if (error) {
-    console.error("Error deleting expense:", error)
-    return { error: error.message }
+  if (deleteError) {
+    console.error("Error deleting expense:", deleteError)
+    return { error: deleteError.message }
+  }
+
+  // Restore wallet balance (add back the expense amount)
+  const { data: wallet, error: walletFetchError } = await supabase
+    .from('wallets')
+    .select('balance')
+    .eq('id', expense.wallet_id)
+    .single()
+
+  if (walletFetchError) {
+    console.error("Error fetching wallet:", walletFetchError)
+    return { error: "Failed to fetch wallet balance" }
+  }
+
+  const newBalance = wallet.balance + expense.amount
+
+  const { error: walletUpdateError } = await supabase
+    .from('wallets')
+    .update({ balance: newBalance })
+    .eq('id', expense.wallet_id)
+
+  if (walletUpdateError) {
+    console.error("Error updating wallet balance:", walletUpdateError)
+    return { error: "Failed to update wallet balance" }
   }
 
   revalidatePath('/transactions/expenses')
+  revalidatePath('/wallets')
   return { success: true }
 }
