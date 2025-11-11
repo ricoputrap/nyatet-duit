@@ -123,8 +123,29 @@ export async function createExpense(data: IExpenseFormData) {
     return { error: "Failed to update wallet balance" }
   }
 
+  // Update budget spent amount if there's an active budget for this category and date
+  const { data: budgets } = await supabase
+    .from('budgets')
+    .select('id, allocation, spent')
+    .eq('category_id', data.category_id)
+    .eq('user_id', user?.id)
+    .lte('start_date', data.date)
+    .gte('end_date', data.date)
+
+  if (budgets && budgets.length > 0) {
+    // Update the first matching budget (there should typically be only one)
+    const budget = budgets[0]
+    const newSpent = (budget.spent || 0) + data.amount
+
+    await supabase
+      .from('budgets')
+      .update({ spent: newSpent })
+      .eq('id', budget.id)
+  }
+
   revalidatePath('/transactions/expenses')
   revalidatePath('/wallets')
+  revalidatePath('/budgets/budgets')
   return { success: true }
 }
 
@@ -134,7 +155,7 @@ export async function updateExpense(id: string, data: IExpenseFormData) {
   // Get the old expense data first
   const { data: oldExpense, error: fetchError } = await supabase
     .from('expenses')
-    .select('amount, wallet_id')
+    .select('amount, wallet_id, category_id, date')
     .eq('id', id)
     .single()
 
@@ -159,6 +180,9 @@ export async function updateExpense(id: string, data: IExpenseFormData) {
     console.error("Error updating expense:", updateError)
     return { error: updateError.message }
   }
+
+  // Get user for budget queries
+  const user = await getUser()
 
   // If wallet changed, restore old wallet balance and deduct from new wallet
   if (oldExpense.wallet_id !== data.wallet_id) {
@@ -209,18 +233,57 @@ export async function updateExpense(id: string, data: IExpenseFormData) {
     }
   }
 
+  // Update budget spent amount
+  // First, subtract old amount from old budget (if exists)
+  const { data: oldBudgets } = await supabase
+    .from('budgets')
+    .select('id, spent')
+    .eq('category_id', oldExpense.category_id)
+    .eq('user_id', user?.id)
+    .lte('start_date', oldExpense.date)
+    .gte('end_date', oldExpense.date)
+
+  if (oldBudgets && oldBudgets.length > 0) {
+    const oldBudget = oldBudgets[0]
+    const newSpent = Math.max(0, (oldBudget.spent || 0) - oldExpense.amount)
+    await supabase
+      .from('budgets')
+      .update({ spent: newSpent })
+      .eq('id', oldBudget.id)
+  }
+
+  // Then, add new amount to new budget (if exists)
+  const { data: newBudgets } = await supabase
+    .from('budgets')
+    .select('id, spent')
+    .eq('category_id', data.category_id)
+    .eq('user_id', user?.id)
+    .lte('start_date', data.date)
+    .gte('end_date', data.date)
+
+  if (newBudgets && newBudgets.length > 0) {
+    const newBudget = newBudgets[0]
+    const newSpent = (newBudget.spent || 0) + data.amount
+    await supabase
+      .from('budgets')
+      .update({ spent: newSpent })
+      .eq('id', newBudget.id)
+  }
+
   revalidatePath('/transactions/expenses')
   revalidatePath('/wallets')
+  revalidatePath('/budgets/budgets')
   return { success: true }
 }
 
 export async function deleteExpense(id: string) {
   const supabase = await createClient()
+  const user = await getUser()
 
   // Get the expense data before deleting
   const { data: expense, error: fetchError } = await supabase
     .from('expenses')
-    .select('amount, wallet_id')
+    .select('amount, wallet_id, category_id, date')
     .eq('id', id)
     .single()
 
@@ -264,7 +327,26 @@ export async function deleteExpense(id: string) {
     return { error: "Failed to update wallet balance" }
   }
 
+  // Update budget spent amount (subtract the deleted expense amount)
+  const { data: budgets } = await supabase
+    .from('budgets')
+    .select('id, spent')
+    .eq('category_id', expense.category_id)
+    .eq('user_id', user?.id)
+    .lte('start_date', expense.date)
+    .gte('end_date', expense.date)
+
+  if (budgets && budgets.length > 0) {
+    const budget = budgets[0]
+    const newSpent = Math.max(0, (budget.spent || 0) - expense.amount)
+    await supabase
+      .from('budgets')
+      .update({ spent: newSpent })
+      .eq('id', budget.id)
+  }
+
   revalidatePath('/transactions/expenses')
   revalidatePath('/wallets')
+  revalidatePath('/budgets/budgets')
   return { success: true }
 }

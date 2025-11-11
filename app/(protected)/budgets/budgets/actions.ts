@@ -24,6 +24,7 @@ export async function getBudgets(params: IBudgetPageParams): Promise<IBudget[]> 
       start_date,
       end_date,
       allocation,
+      spent,
       user_id,
       created_at,
       updated_at,
@@ -61,7 +62,7 @@ export async function getBudgets(params: IBudgetPageParams): Promise<IBudget[]> 
     start_date: budget.start_date,
     end_date: budget.end_date,
     allocation: budget.allocation,
-    spent: 0, // TODO: Calculate actual spent amount from transactions
+    spent: budget.spent || 0,
     user_id: budget.user_id,
     created_at: budget.created_at,
     updated_at: budget.updated_at,
