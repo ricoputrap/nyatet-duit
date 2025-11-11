@@ -2,10 +2,13 @@
 
 import { createClient, getUser } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { IWalletPageParams } from "./types"
 
-export async function getWallets(search?: string) {
+export async function getWallets(params: IWalletPageParams) {
   const supabase = await createClient()
   const user = await getUser()
+
+  const { search = "" } = params
 
   let query = supabase
     .from("wallets")

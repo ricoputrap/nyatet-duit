@@ -9,7 +9,7 @@ interface Props {
 
 export default async function WalletTable({ params }: Props) {
   const { search } = await params
-  const wallets = await getWallets(search)
+  const wallets = await getWallets({ search })
 
   return <DataTable columns={columns} data={wallets} />
 }
