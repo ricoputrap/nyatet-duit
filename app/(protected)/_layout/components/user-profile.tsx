@@ -49,7 +49,7 @@ export async function UserProfile() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <a href="/profile" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
+            <User className="h-4 w-4" />
             Profile
           </a>
         </DropdownMenuItem>

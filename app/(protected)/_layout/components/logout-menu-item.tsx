@@ -23,7 +23,7 @@ export function LogoutMenuItem() {
       onClick={handleSignOut}
       disabled={isPending}
     >
-      <LogOut className="mr-2 h-4 w-4" />
+      <LogOut className="h-4 w-4" />
       {isPending ? 'Signing out...' : 'Logout'}
     </DropdownMenuItem>
   )
